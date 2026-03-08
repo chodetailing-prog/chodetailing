@@ -9,11 +9,14 @@ export default function PortfolioDetail() {
   const [item, setItem] = useState<PortfolioItem | null>(null);
 
   useEffect(() => {
-    const items = getPortfolioItems();
-    const found = items.find((i) => i.id === id);
-    if (found) {
-      setItem(found);
-    }
+    const loadItem = async () => {
+      const items = await getPortfolioItems();
+      const found = items.find((i) => i.id === id);
+      if (found) {
+        setItem(found);
+      }
+    };
+    loadItem();
     window.scrollTo(0, 0);
   }, [id]);
 

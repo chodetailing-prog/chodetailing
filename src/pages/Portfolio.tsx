@@ -8,7 +8,11 @@ export default function Portfolio() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
 
   useEffect(() => {
-    setPortfolioItems(getPortfolioItems());
+    const loadItems = async () => {
+      const items = await getPortfolioItems();
+      setPortfolioItems(items);
+    };
+    loadItems();
   }, []);
 
   return (

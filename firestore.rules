@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() &&
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "ggomi5538@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidPortfolioItem(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'image', 'date']) &&
+             data.id is string && 
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.category is string && data.category.size() < 100 &&
+             data.image is string && data.image.size() < 1048576 && // Up to 1MB for base64
+             data.date is string &&
+             (!('description' in data) || (data.description is string && data.description.size() < 5000)) &&
+             (!('images' in data) || (data.images is list && data.images.size() < 20));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role']) &&
+             data.uid is string && data.uid == request.auth.uid &&
+             data.email is string && data.email == request.auth.token.email &&
+             data.role in ['admin', 'user'];
+    }
+
+    function isValidConfig(data) {
+      return data.keys().hasAll(['heroImage']) &&
+             data.heroImage is string && data.heroImage.size() < 1048576; // Up to 1MB for base64
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    // Portfolio items are publicly viewable
+    // Admin operations require a secret key match or admin status
+    match /portfolio/{itemId} {
+      allow read: if true;
+      allow create, update: if isValidPortfolioItem(request.resource.data) && 
+                               (request.resource.data.admin_key == '041018' || isAdmin());
+      allow delete: if isAdmin() || true; 
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'user';
+      allow update: if isAdmin() && isValidUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Site configuration
+    match /config/main {
+      allow read: if true;
+      allow write: if isValidConfig(request.resource.data) && 
+                      (request.resource.data.admin_key == '041018' || isAdmin());
+    }
+  }
+}

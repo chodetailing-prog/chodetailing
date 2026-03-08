@@ -2,19 +2,22 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { PortfolioItem, getPortfolioItems } from "@/lib/store";
+import { PortfolioItem, getPortfolioItems, getHeroImage } from "@/lib/store";
 
 export default function Home() {
   const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop");
   const [recentWorks, setRecentWorks] = useState<PortfolioItem[]>([]);
 
   useEffect(() => {
-    const savedImage = localStorage.getItem("heroImage");
-    if (savedImage) {
-      setHeroImage(savedImage);
-    }
+    const loadData = async () => {
+      const image = await getHeroImage();
+      setHeroImage(image);
+      
+      const items = await getPortfolioItems();
+      setRecentWorks(items.slice(0, 2));
+    };
     
-    setRecentWorks(getPortfolioItems().slice(0, 2));
+    loadData();
   }, []);
 
   return (

@@ -2,16 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { Settings, FileText, Plus, Trash2, Edit3, X, Upload, Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PortfolioItem, getPortfolioItems, savePortfolioItems, fileToBase64 } from "@/lib/store";
+import { 
+  PortfolioItem, 
+  subscribePortfolioItems, 
+  savePortfolioItem, 
+  deletePortfolioItem, 
+  fileToBase64,
+  getHeroImage,
+  saveHeroImage
+} from "@/lib/store";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("posts");
   const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop");
-  const [isEditingHero, setIsEditingHero] = useState(false);
   
   const [posts, setPosts] = useState<PortfolioItem[]>([]);
   const [isEditingPost, setIsEditingPost] = useState(false);
@@ -22,15 +30,25 @@ export default function Admin() {
   const postGalleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const auth = localStorage.getItem("adminAuth");
-    if (auth === "true") {
+    const authStatus = localStorage.getItem("adminAuth");
+    if (authStatus === "true") {
       setIsAuthenticated(true);
     }
-    
-    const savedHero = localStorage.getItem("heroImage");
-    if (savedHero) setHeroImage(savedHero);
+    setIsLoading(false);
 
-    setPosts(getPortfolioItems());
+    const loadHero = async () => {
+      const img = await getHeroImage();
+      setHeroImage(img);
+    };
+    loadHero();
+
+    const unsubscribePosts = subscribePortfolioItems((items) => {
+      setPosts(items);
+    });
+
+    return () => {
+      unsubscribePosts();
+    };
   }, []);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -54,8 +72,7 @@ export default function Admin() {
     if (file) {
       const base64 = await fileToBase64(file);
       setHeroImage(base64);
-      localStorage.setItem("heroImage", base64);
-      setIsEditingHero(false);
+      await saveHeroImage(base64);
     }
   };
 
@@ -85,41 +102,48 @@ export default function Admin() {
     setCurrentPost({ ...currentPost, images: newImages });
   };
 
-  const handleSavePost = () => {
+  const handleSavePost = async () => {
     if (!currentPost.title || !currentPost.image) {
       alert("제목과 대표 이미지는 필수입니다.");
       return;
     }
     
-    let updatedPosts;
-    if (currentPost.id) {
-      updatedPosts = posts.map(p => p.id === currentPost.id ? currentPost as PortfolioItem : p);
-    } else {
-      const newPost: PortfolioItem = {
-        id: Date.now().toString(),
-        title: currentPost.title || "",
-        category: currentPost.category || "",
-        image: currentPost.image || "",
-        images: currentPost.images || [currentPost.image || ""],
-        date: currentPost.date || new Date().toISOString().split('T')[0],
-        description: currentPost.description || ""
-      };
-      updatedPosts = [newPost, ...posts];
-    }
+    const postToSave: PortfolioItem = {
+      id: currentPost.id || Date.now().toString(),
+      title: currentPost.title || "",
+      category: currentPost.category || "",
+      image: currentPost.image || "",
+      images: currentPost.images || [currentPost.image || ""],
+      date: currentPost.date || new Date().toISOString().split('T')[0],
+      description: currentPost.description || ""
+    };
     
-    setPosts(updatedPosts);
-    savePortfolioItems(updatedPosts);
-    setIsEditingPost(false);
-    setCurrentPost({});
+    try {
+      await savePortfolioItem(postToSave);
+      setIsEditingPost(false);
+      setCurrentPost({});
+    } catch (error) {
+      alert("저장 실패: 권한이 없거나 오류가 발생했습니다.");
+    }
   };
 
-  const handleDeletePost = (id: string) => {
+  const handleDeletePost = async (id: string) => {
     if (confirm("정말 이 포스트를 삭제하시겠습니까?")) {
-      const updatedPosts = posts.filter(p => p.id !== id);
-      setPosts(updatedPosts);
-      savePortfolioItems(updatedPosts);
+      try {
+        await deletePortfolioItem(id);
+      } catch (error) {
+        alert("삭제 실패: 권한이 없거나 오류가 발생했습니다.");
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (

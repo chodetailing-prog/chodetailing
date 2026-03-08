@@ -1,0 +1,52 @@
+{
+  "entities": {
+    "PortfolioItem": {
+      "title": "Portfolio Item",
+      "description": "A portfolio entry showing a detailing job",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "image": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "date": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "title", "category", "image", "date"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile with role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "SiteConfig": {
+      "title": "Site Configuration",
+      "description": "Global site settings",
+      "type": "object",
+      "properties": {
+        "heroImage": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/portfolio/{itemId}": {
+      "schema": "PortfolioItem",
+      "description": "Collection of portfolio items"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles"
+    },
+    "/config/main": {
+      "schema": "SiteConfig",
+      "description": "Main site configuration"
+    }
+  }
+}
