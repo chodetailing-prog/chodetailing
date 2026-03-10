@@ -114,7 +114,7 @@ export default function Home() {
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
                   
                   {/* Consistent Pastel Blue Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-sky-400/60 via-sky-200/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-sky-400/60 via-sky-200/10 to-transparent opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500" />
                 </div>
                 
                 <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 md:p-8 text-white">
@@ -123,7 +123,7 @@ export default function Home() {
                       {service.title}
                     </h3>
                     <div className="overflow-hidden">
-                      <p className="text-xs md:text-sm lg:text-base text-white font-medium leading-snug transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out opacity-0 group-hover:opacity-100">
+                      <p className="text-xs md:text-sm lg:text-base text-white font-medium leading-snug transform translate-y-full group-hover:translate-y-0 group-active:translate-y-0 transition-transform duration-500 ease-out opacity-0 group-hover:opacity-100 group-active:opacity-100">
                         {service.desc}
                       </p>
                     </div>
