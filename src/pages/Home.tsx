@@ -87,7 +87,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-6 leading-[0.9]"
+            className="text-4xl md:text-7xl font-black tracking-tighter uppercase mb-6 leading-[0.9]"
           >
             {siteConfig.brandName.includes('&') ? (
               <>
