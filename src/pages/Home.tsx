@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PortfolioItem, getPortfolioItems, getHeroImage, getServices, Service } from "@/lib/store";
+import { PortfolioItem, getPortfolioItems, getServices, Service, getSiteConfig, SiteConfig } from "@/lib/store";
 
 export default function Home() {
   const fallbackRecentWorks = [
@@ -31,9 +31,13 @@ export default function Home() {
     { id: "signature", title: "Premium Hand Wash", description: "전문적인 프리미엄 세차 서비스", image: "https://images.unsplash.com/photo-1605515298946-d062f2e9da53?q=80&w=2000&auto=format&fit=crop", price: "", order: 4, features: [] }
   ];
 
-  const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop");
   const [recentWorks, setRecentWorks] = useState<PortfolioItem[]>(fallbackRecentWorks);
   const [services, setServices] = useState<Service[]>(fallbackServices);
+  const [siteConfig, setSiteConfig] = useState<SiteConfig>({
+    heroImage: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop",
+    brandName: "CHO DETAILING",
+    heroSubtitle: "하이엔드 자동차 디테일링의 새로운 기준"
+  });
 
   const shortDescriptions: Record<string, string> = {
     "interior": "실내 정밀 세정 및 가죽 보호 케어",
@@ -45,8 +49,8 @@ export default function Home() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const image = await getHeroImage();
-        if (image) setHeroImage(image);
+        const config = await getSiteConfig();
+        setSiteConfig(config);
         
         const items = await getPortfolioItems();
         if (items && items.length > 0) {
@@ -72,7 +76,7 @@ export default function Home() {
       <section className="relative h-[80vh] w-full flex items-center justify-center overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">
           <img
-            src={heroImage}
+            src={siteConfig.heroImage}
             alt="Luxury Car Detailing"
             className="w-full h-full object-cover opacity-60"
             referrerPolicy="no-referrer"
@@ -85,7 +89,7 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-5xl md:text-8xl font-bold tracking-tighter uppercase mb-6"
           >
-            Perfection <br /> in Details
+            {siteConfig.brandName.split(' ')[0]} <br /> {siteConfig.brandName.split(' ').slice(1).join(' ')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -93,7 +97,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="text-lg md:text-2xl font-light tracking-widest uppercase text-white/80 max-w-2xl mx-auto"
           >
-            하이엔드 자동차 디테일링의 <br className="md:hidden" /> 새로운 기준
+            {siteConfig.heroSubtitle}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -101,6 +101,13 @@ export interface Service {
   pricing?: PricingPlan[];
 }
 
+export interface SiteConfig {
+  heroImage: string;
+  brandName: string;
+  heroSubtitle: string;
+  aboutText?: string;
+}
+
 // Collection references
 const portfolioCol = collection(db, "portfolio");
 const servicesCol = collection(db, "services");
@@ -221,8 +228,35 @@ export async function getHeroImage(): Promise<string> {
   return "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop";
 }
 
+export async function getSiteConfig(): Promise<SiteConfig> {
+  try {
+    const snapshot = await getDoc(configDoc);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      return {
+        heroImage: data.heroImage || "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop",
+        brandName: data.brandName || "CHO DETAILING",
+        heroSubtitle: data.heroSubtitle || "하이엔드 자동차 디테일링의 새로운 기준",
+        aboutText: data.aboutText || ""
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching site config:", error);
+  }
+  return {
+    heroImage: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop",
+    brandName: "CHO DETAILING",
+    heroSubtitle: "하이엔드 자동차 디테일링의 새로운 기준",
+    aboutText: ""
+  };
+}
+
 export async function saveHeroImage(url: string) {
   await setDoc(configDoc, { heroImage: url, admin_key: "041018" }, { merge: true });
+}
+
+export async function saveSiteConfig(config: Partial<SiteConfig>) {
+  await setDoc(configDoc, { ...config, admin_key: "041018" }, { merge: true });
 }
 
 export async function seedPortfolioItems() {

@@ -8,8 +8,8 @@ import {
   savePortfolioItem, 
   deletePortfolioItem, 
   fileToBase64,
-  getHeroImage,
-  saveHeroImage,
+  getSiteConfig,
+  saveSiteConfig,
   Service,
   subscribeServices,
   saveService,
@@ -23,7 +23,12 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState("posts");
-  const [heroImage, setHeroImage] = useState("https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop");
+  const [siteConfig, setSiteConfig] = useState({
+    heroImage: "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2069&auto=format&fit=crop",
+    brandName: "CHO DETAILING",
+    heroSubtitle: "하이엔드 자동차 디테일링의 새로운 기준",
+    aboutText: ""
+  });
   
   const [posts, setPosts] = useState<PortfolioItem[]>([]);
   const [isEditingPost, setIsEditingPost] = useState(false);
@@ -46,11 +51,11 @@ export default function Admin() {
     }
     setIsLoading(false);
 
-    const loadHero = async () => {
-      const img = await getHeroImage();
-      setHeroImage(img);
+    const loadConfig = async () => {
+      const config = await getSiteConfig();
+      setSiteConfig(config);
     };
-    loadHero();
+    loadConfig();
 
     const unsubscribePosts = subscribePortfolioItems((items) => {
       setPosts(items);
@@ -87,8 +92,21 @@ export default function Admin() {
     const file = e.target.files?.[0];
     if (file) {
       const base64 = await fileToBase64(file);
-      setHeroImage(base64);
-      await saveHeroImage(base64);
+      setSiteConfig({ ...siteConfig, heroImage: base64 });
+      await saveSiteConfig({ heroImage: base64 });
+    }
+  };
+
+  const handleSaveSiteText = async () => {
+    try {
+      await saveSiteConfig({
+        brandName: siteConfig.brandName,
+        heroSubtitle: siteConfig.heroSubtitle,
+        aboutText: siteConfig.aboutText
+      });
+      alert("변경사항이 저장되었습니다.");
+    } catch (error) {
+      alert("저장 실패: 권한이 없거나 오류가 발생했습니다.");
     }
   };
 
@@ -652,7 +670,7 @@ export default function Admin() {
 
                   <div className="aspect-[21/9] w-full bg-black/10 rounded-lg overflow-hidden relative border border-black/10">
                     <img 
-                      src={heroImage} 
+                      src={siteConfig.heroImage} 
                       alt="Current Hero" 
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
@@ -663,36 +681,45 @@ export default function Admin() {
                 <hr className="border-black/10" />
 
                 <div className="space-y-8">
-                  <h3 className="text-lg font-bold tracking-tight">Text & Colors</h3>
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">Brand Name</h4>
-                    <input 
-                      type="text" 
-                      defaultValue="CHO DETAILING"
-                      className="w-full max-w-md bg-transparent border-b border-black/20 py-2 focus:outline-none focus:border-black transition-colors font-medium"
-                    />
-                  </div>
+                  <h3 className="text-lg font-bold tracking-tight">Text & Content</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">Brand Name</h4>
+                      <input 
+                        type="text" 
+                        value={siteConfig.brandName}
+                        onChange={(e) => setSiteConfig({...siteConfig, brandName: e.target.value})}
+                        className="w-full bg-transparent border-b border-black/20 py-2 focus:outline-none focus:border-black transition-colors font-medium"
+                      />
+                    </div>
 
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">Hero Subtitle</h4>
-                    <input 
-                      type="text" 
-                      defaultValue="하이엔드 자동차 디테일링의 새로운 기준"
-                      className="w-full max-w-md bg-transparent border-b border-black/20 py-2 focus:outline-none focus:border-black transition-colors font-medium"
-                    />
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">Theme Color (Accent)</h4>
-                    <div className="flex gap-4">
-                      <button className="w-10 h-10 rounded-full bg-black ring-2 ring-offset-2 ring-black"></button>
-                      <button className="w-10 h-10 rounded-full bg-zinc-800"></button>
-                      <button className="w-10 h-10 rounded-full bg-neutral-900"></button>
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">Hero Subtitle</h4>
+                      <input 
+                        type="text" 
+                        value={siteConfig.heroSubtitle}
+                        onChange={(e) => setSiteConfig({...siteConfig, heroSubtitle: e.target.value})}
+                        className="w-full bg-transparent border-b border-black/20 py-2 focus:outline-none focus:border-black transition-colors font-medium"
+                      />
                     </div>
                   </div>
 
-                  <button className="px-8 py-3 bg-black text-white font-medium tracking-widest uppercase hover:bg-black/80 transition-colors mt-8">
-                    Save Text Changes
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium tracking-widest uppercase text-black/60">About Us Description (Optional)</h4>
+                    <textarea 
+                      value={siteConfig.aboutText}
+                      onChange={(e) => setSiteConfig({...siteConfig, aboutText: e.target.value})}
+                      rows={6}
+                      className="w-full bg-transparent border border-black/10 p-4 focus:outline-none focus:border-black transition-colors font-light leading-relaxed rounded-md"
+                      placeholder="회사 소개 문구를 입력하세요..."
+                    />
+                  </div>
+
+                  <button 
+                    onClick={handleSaveSiteText}
+                    className="px-8 py-3 bg-black text-white font-medium tracking-widest uppercase hover:bg-black/80 transition-colors mt-8 rounded-md"
+                  >
+                    Save Changes
                   </button>
                 </div>
               </div>

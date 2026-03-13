@@ -1,11 +1,19 @@
 import { motion } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Award, Sparkles, Clock } from "lucide-react";
+import { getSiteConfig, SiteConfig } from "@/lib/store";
 
 export default function About() {
+  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    const loadConfig = async () => {
+      const config = await getSiteConfig();
+      setSiteConfig(config);
+    };
+    loadConfig();
   }, []);
 
   return (
@@ -55,20 +63,26 @@ export default function About() {
               자동차를 향한 <br /> 진심 어린 집착
             </h3>
             <div className="space-y-6 text-lg text-black/60 font-light leading-relaxed">
-              <p>
-                대한민국에 위치한 CHO DETAILING에서는 전문적인 프리미엄 차량 케어 서비스를 제공합니다. 
-                꼼꼼한 세척, 광택, 그리고 보호(왁스 또는 세라믹 코팅)를 포함한 모든 서비스를 통해 
-                고객님의 차량을 전시장 수준의 완벽한 상태로 복원해 드립니다.
-              </p>
-              <p>
-                기존의 일반적인 세차 업체와는 달리, 저희는 양보다 질을 최우선으로 생각합니다. 
-                그렇기 때문에 한 대의 차량을 작업하더라도 최고의 정성과 시간을 들여 관리해 드릴 것을 약속드립니다.
-              </p>
-              <p>
-                최고급 자재와 검증된 제품, 그리고 숙련된 기술을 사용하여 타협하지 않는 최상의 결과를 만들어냅니다. 
-                차량 코팅, 광택, 실내 디테일링 등 어떤 서비스를 선택하시든, CHO DETAILING에서는 
-                고객님의 차량을 가장 빛나는 완벽한 상태로 되돌려 드립니다!
-              </p>
+              {siteConfig?.aboutText ? (
+                <div className="whitespace-pre-wrap">{siteConfig.aboutText}</div>
+              ) : (
+                <>
+                  <p>
+                    대한민국에 위치한 CHO DETAILING에서는 전문적인 프리미엄 차량 케어 서비스를 제공합니다. 
+                    꼼꼼한 세척, 광택, 그리고 보호(왁스 또는 세라믹 코팅)를 포함한 모든 서비스를 통해 
+                    고객님의 차량을 전시장 수준의 완벽한 상태로 복원해 드립니다.
+                  </p>
+                  <p>
+                    기존의 일반적인 세차 업체와는 달리, 저희는 양보다 질을 최우선으로 생각합니다. 
+                    그렇기 때문에 한 대의 차량을 작업하더라도 최고의 정성과 시간을 들여 관리해 드릴 것을 약속드립니다.
+                  </p>
+                  <p>
+                    최고급 자재와 검증된 제품, 그리고 숙련된 기술을 사용하여 타협하지 않는 최상의 결과를 만들어냅니다. 
+                    차량 코팅, 광택, 실내 디테일링 등 어떤 서비스를 선택하시든, CHO DETAILING에서는 
+                    고객님의 차량을 가장 빛나는 완벽한 상태로 되돌려 드립니다!
+                  </p>
+                </>
+              )}
             </div>
           </motion.div>
           <motion.div
