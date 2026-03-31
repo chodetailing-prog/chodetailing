@@ -433,9 +433,9 @@ export async function seedPortfolioItems() {
               buttonText: "세라믹 코팅 알아보기"
             },
             {
-              title: "헤드라이트 광택",
+              title: "헤드라이트 폴리싱",
               description: "샌딩 및 폴리싱 기술을 사용하면 흐릿해진 헤드라이트를 원래의 선명함으로 되돌릴 수 있습니다. 헤드라이트 폴리싱은 차량의 전조등이 불분명하여 기술 검사를 통과하지 못한 경우에도 적합한 방법입니다.",
-              image: "https://images.unsplash.com/photo-1626961527443-432549293673?q=80&w=2000&auto=format&fit=crop",
+              image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=2000&auto=format&fit=crop",
               price: "헤드라이트 개당 ₩40,000부터"
             }
           ]

@@ -111,9 +111,9 @@ export default function ServiceDetail() {
           buttonText: "세라믹 코팅 알아보기"
         },
         {
-          title: "헤드라이트 광택",
+          title: "헤드라이트 폴리싱",
           description: "샌딩 및 폴리싱 기술을 사용하면 흐릿해진 헤드라이트를 원래의 선명함으로 되돌릴 수 있습니다. 헤드라이트 폴리싱은 차량의 전조등이 불분명하여 기술 검사를 통과하지 못한 경우에도 적합한 방법입니다.",
-          image: "https://images.unsplash.com/photo-1626961527443-432549293673?q=80&w=2000&auto=format&fit=crop",
+          image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=2000&auto=format&fit=crop",
           price: "헤드라이트 개당 ₩40,000부터"
         }
       ]
@@ -355,13 +355,13 @@ export default function ServiceDetail() {
           {service.featureSections.map((section, index) => (
             <div 
               key={index} 
-              className={`relative flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center min-h-[400px] sm:min-h-[500px] lg:min-h-0`}
+              className={`relative flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center lg:h-[600px] overflow-hidden`}
             >
-              {/* Image Side - Background on mobile (half width), Side on desktop */}
-              <div className={`absolute inset-y-0 ${index % 2 === 0 ? 'left-0' : 'right-0'} w-1/2 lg:relative lg:inset-auto lg:w-1/2 overflow-hidden bg-white`}>
+              {/* Image Side - Background on mobile (full width), Side on desktop */}
+              <div className={`absolute inset-0 w-full lg:relative lg:w-1/2 overflow-hidden bg-white`}>
                 <motion.div
                   initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 0.3 }}
+                  whileInView={{ opacity: 0.2 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5 }}
                   className="w-full h-full"
@@ -379,7 +379,7 @@ export default function ServiceDetail() {
               </div>
               
               {/* Text Side */}
-              <div className="relative z-10 w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-24 xl:p-32 space-y-6 md:space-y-8">
+              <div className="relative z-10 w-full lg:w-1/2 h-full p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 flex flex-col justify-center space-y-6 md:space-y-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
