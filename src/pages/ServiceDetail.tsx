@@ -203,7 +203,7 @@ export default function ServiceDetail() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase text-white mb-6 leading-none">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase text-white mb-6 leading-none">
               {service.title}
             </h1>
             <div className="w-16 md:w-24 h-1 md:h-1.5 bg-white mx-auto" />
@@ -293,44 +293,35 @@ export default function ServiceDetail() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: pIdx * 0.1, duration: 0.6 }}
-                  className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 shadow-xl md:shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-black/5 flex flex-col hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] transition-all duration-500 group w-full md:w-[calc(50%-2rem)] xl:w-[calc(33.333%-2.5rem)] max-w-lg"
+                  className="bg-white rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.2rem] lg:rounded-[2.5rem] p-6 sm:p-8 lg:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-black/5 flex flex-col hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] transition-all duration-500 group w-full md:w-[calc(50%-2rem)] xl:w-[calc(33.333%-2.5rem)] max-w-lg"
                 >
-                  <div className="mb-8 md:mb-10">
-                    <h4 className="text-2xl md:text-3xl font-bold tracking-tight text-black mb-4 md:mb-6 leading-tight">
+                  <div className="mb-6 md:mb-10">
+                    <h4 className="text-xl lg:text-3xl font-bold tracking-tight text-black mb-3 sm:mb-4 md:mb-8 leading-tight min-h-0 md:min-h-[4.5rem]">
                       {plan.title}
                     </h4>
                     
                     {plan.price && (
-                      <div className="flex items-baseline flex-wrap gap-1 mb-4">
-                        <span className="text-base md:text-xl font-light text-black">₩</span>
-                        <span className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-black">
+                      <div className="flex items-baseline flex-wrap gap-1 mb-2">
+                        <span className="text-sm sm:text-base lg:text-xl font-light text-black">₩</span>
+                        <span className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter text-black">
                           {plan.price.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                         </span>
-                        <span className="text-xs font-medium text-black/40 ml-1">incl. VAT</span>
+                        <span className="text-[10px] sm:text-xs font-medium text-black/40 ml-1">incl. VAT</span>
                       </div>
-                    )}
-
-                    {plan.description && (
-                      <p className="text-sm md:text-base text-black/50 font-light leading-relaxed break-keep">
-                        {plan.description}
-                      </p>
                     )}
                   </div>
 
-                  <div className="flex-grow space-y-4 md:space-y-5 mb-10 md:mb-12">
-                    <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20 mb-2">Included Features</div>
+                  <div className="flex-grow space-y-3 md:space-y-5 mb-6 sm:mb-8 md:mb-12">
                     {plan.features && plan.features.map((feature, fIdx) => {
                       const isAdditionalInfo = feature.includes('SUV') || feature.includes('RV') || feature.includes('별도 문의');
                       const isPriceLine = feature.includes('+') && (feature.includes('만원') || feature.includes('원'));
                       
                       return (
-                        <div key={fIdx} className={`flex items-start gap-3 md:gap-4 ${isAdditionalInfo ? 'pt-2 border-t border-black/5 mt-2' : ''}`}>
-                          {!isAdditionalInfo ? (
-                            <CheckCircle2 size={18} className="text-black shrink-0 mt-0.5" strokeWidth={1.5} />
-                          ) : (
-                            <div className="w-[18px] shrink-0" />
+                        <div key={fIdx} className={`flex items-start gap-2 sm:gap-3 md:gap-4 ${isAdditionalInfo ? '!mt-1' : ''}`}>
+                          {!isAdditionalInfo && (
+                            <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-black/20 rounded-full mt-2 md:mt-2.5 shrink-0 group-hover:bg-black/40 transition-colors" />
                           )}
-                          <span className={`text-sm md:text-base leading-relaxed break-keep ${isAdditionalInfo ? 'text-black/80 font-medium' : 'text-black/60 font-light'}`}>
+                          <span className={`text-sm md:text-base leading-relaxed break-keep ${isAdditionalInfo ? 'text-black/80' : 'text-black/60 font-light'} ${isAdditionalInfo && !isPriceLine ? 'pl-0' : ''}`}>
                             {isPriceLine ? (
                               <>
                                 <span className="font-light">{feature.split('+')[0]}</span>
@@ -358,35 +349,37 @@ export default function ServiceDetail() {
         </section>
       )}
 
-      {/* Feature Sections (Split Layout) */}
+      {/* Feature Sections (Split Layout / Mobile Overlay) */}
       {service.featureSections && service.featureSections.length > 0 && (
         <section className="w-full overflow-hidden border-t border-black/5">
           {service.featureSections.map((section, index) => (
             <div 
               key={index} 
-              className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center lg:h-[600px] bg-white`}
+              className={`relative flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center lg:h-[600px] overflow-hidden`}
             >
-              {/* Image Side */}
-              <div className="w-full lg:w-1/2 h-64 sm:h-80 md:h-96 lg:h-full overflow-hidden">
+              {/* Image Side - Background on mobile (full width), Side on desktop */}
+              <div className={`absolute inset-0 w-full lg:relative lg:w-1/2 overflow-hidden bg-white`}>
                 <motion.div
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 0.2 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.2 }}
+                  transition={{ duration: 1.5 }}
                   className="w-full h-full"
                 >
                   <img 
                     src={section.image} 
                     alt={section.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover grayscale-[0.2] brightness-110"
                     referrerPolicy="no-referrer"
                   />
                 </motion.div>
+                {/* Gradient masks to fade the image into the background */}
+                <div className={`absolute inset-0 bg-gradient-to-b from-white via-transparent to-white lg:hidden pointer-events-none`} />
+                <div className={`absolute inset-0 bg-gradient-to-r ${index % 2 === 0 ? 'from-transparent to-white' : 'from-white to-transparent'} pointer-events-none`} />
               </div>
               
               {/* Text Side */}
-              <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 flex flex-col justify-center space-y-6 md:space-y-8 bg-white relative">
-                <div className="absolute top-0 left-8 w-12 h-1 bg-black/10 lg:hidden" />
+              <div className="relative z-10 w-full lg:w-1/2 h-full p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 flex flex-col justify-center space-y-6 md:space-y-8">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -394,8 +387,7 @@ export default function ServiceDetail() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="space-y-4 md:space-y-6"
                 >
-                  <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-black/20">Feature {index + 1}</div>
-                  <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black leading-tight break-keep">
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-black leading-tight break-keep">
                     {section.title.split('\n').map((line, i, arr) => (
                       <span key={i}>
                         {line}
