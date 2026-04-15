@@ -293,35 +293,44 @@ export default function ServiceDetail() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: pIdx * 0.1, duration: 0.6 }}
-                  className="bg-white rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.2rem] lg:rounded-[2.5rem] p-6 sm:p-8 lg:p-12 shadow-xl md:shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-black/5 flex flex-col hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] transition-all duration-500 group w-full md:w-[calc(50%-2rem)] xl:w-[calc(33.333%-2.5rem)] max-w-lg"
+                  className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 shadow-xl md:shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-black/5 flex flex-col hover:shadow-[0_30px_60px_rgba(0,0,0,0.06)] transition-all duration-500 group w-full md:w-[calc(50%-2rem)] xl:w-[calc(33.333%-2.5rem)] max-w-lg"
                 >
-                  <div className="mb-6 md:mb-10">
-                    <h4 className="text-xl lg:text-3xl font-bold tracking-tight text-black mb-3 sm:mb-4 md:mb-8 leading-tight min-h-0 md:min-h-[4.5rem]">
+                  <div className="mb-8 md:mb-10">
+                    <h4 className="text-2xl md:text-3xl font-bold tracking-tight text-black mb-4 md:mb-6 leading-tight">
                       {plan.title}
                     </h4>
                     
                     {plan.price && (
-                      <div className="flex items-baseline flex-wrap gap-1 mb-2">
-                        <span className="text-sm sm:text-base lg:text-xl font-light text-black">₩</span>
-                        <span className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tighter text-black">
+                      <div className="flex items-baseline flex-wrap gap-1 mb-4">
+                        <span className="text-base md:text-xl font-light text-black">₩</span>
+                        <span className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-black">
                           {plan.price.replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                         </span>
-                        <span className="text-[10px] sm:text-xs font-medium text-black/40 ml-1">incl. VAT</span>
+                        <span className="text-xs font-medium text-black/40 ml-1">incl. VAT</span>
                       </div>
+                    )}
+
+                    {plan.description && (
+                      <p className="text-sm md:text-base text-black/50 font-light leading-relaxed break-keep">
+                        {plan.description}
+                      </p>
                     )}
                   </div>
 
-                  <div className="flex-grow space-y-3 md:space-y-5 mb-6 sm:mb-8 md:mb-12">
+                  <div className="flex-grow space-y-4 md:space-y-5 mb-10 md:mb-12">
+                    <div className="text-[10px] font-bold tracking-[0.2em] uppercase text-black/20 mb-2">Included Features</div>
                     {plan.features && plan.features.map((feature, fIdx) => {
                       const isAdditionalInfo = feature.includes('SUV') || feature.includes('RV') || feature.includes('별도 문의');
                       const isPriceLine = feature.includes('+') && (feature.includes('만원') || feature.includes('원'));
                       
                       return (
-                        <div key={fIdx} className={`flex items-start gap-2 sm:gap-3 md:gap-4 ${isAdditionalInfo ? '!mt-1' : ''}`}>
-                          {!isAdditionalInfo && (
-                            <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-black/20 rounded-full mt-2 md:mt-2.5 shrink-0 group-hover:bg-black/40 transition-colors" />
+                        <div key={fIdx} className={`flex items-start gap-3 md:gap-4 ${isAdditionalInfo ? 'pt-2 border-t border-black/5 mt-2' : ''}`}>
+                          {!isAdditionalInfo ? (
+                            <CheckCircle2 size={18} className="text-black shrink-0 mt-0.5" strokeWidth={1.5} />
+                          ) : (
+                            <div className="w-[18px] shrink-0" />
                           )}
-                          <span className={`text-sm md:text-base leading-relaxed break-keep ${isAdditionalInfo ? 'text-black/80' : 'text-black/60 font-light'} ${isAdditionalInfo && !isPriceLine ? 'pl-0' : ''}`}>
+                          <span className={`text-sm md:text-base leading-relaxed break-keep ${isAdditionalInfo ? 'text-black/80 font-medium' : 'text-black/60 font-light'}`}>
                             {isPriceLine ? (
                               <>
                                 <span className="font-light">{feature.split('+')[0]}</span>
@@ -376,7 +385,8 @@ export default function ServiceDetail() {
               </div>
               
               {/* Text Side */}
-              <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 flex flex-col justify-center space-y-6 md:space-y-8">
+              <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 xl:p-24 flex flex-col justify-center space-y-6 md:space-y-8 bg-white relative">
+                <div className="absolute top-0 left-8 w-12 h-1 bg-black/10 lg:hidden" />
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -384,7 +394,8 @@ export default function ServiceDetail() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="space-y-4 md:space-y-6"
                 >
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-black leading-tight break-keep">
+                  <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-black/20">Feature {index + 1}</div>
+                  <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black leading-tight break-keep">
                     {section.title.split('\n').map((line, i, arr) => (
                       <span key={i}>
                         {line}
