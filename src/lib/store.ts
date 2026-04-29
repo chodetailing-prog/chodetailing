@@ -384,10 +384,16 @@ export async function seedPortfolioItems() {
           id: "paint",
           title: "Paint Correction",
           price: "₩450,000부터",
-          description: "긁힘, 흠집, 광택을 잃은 페인트를 제거하여 흠집 없이 최적의 광택과 깊이감을 선사하는 마감 처리를 해드립니다! 플라스틱이나 고무와 같은 민감한 부위는 연마제와의 마찰을 방지하기 위해 전문적으로 보호 처리됩니다.\n\n저희는 광택 작업을 가벼운 작업과 강도 높은 작업, 두 단계로 나눕니다. 어떤 작업이 고객님의 차량에 적합한지는 도장면의 상태와 원하시는 결과에 따라 결정됩니다.\n\n견적 문의는 부담 없이 연락 주시고, 페인트 상태를 직접 확인하고 싶으시면 언제든지 저희 매장을 방문해 주세요.",
+          description: "도장면의 스크래치, 스월마크, 워터스팟 등을 정밀하게 연마하여 신차 이상의 완벽한 도장 상태로 복원하는 광택 작업입니다.",
           image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2000&auto=format&fit=crop",
           order: 2,
-          features: [],
+          features: [
+            "정밀 마스킹 및 전처리",
+            "수성 광택 (1~3 Step)",
+            "홀로그램 및 스월마크 완벽 제거",
+            "도장면 탈지 및 검수",
+            "프리미엄 실런트 코팅"
+          ],
           pricing: [
             { 
               title: "라이트 폴리싱 (Light Polish)", 

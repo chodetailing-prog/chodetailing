@@ -68,10 +68,16 @@ export default function ServiceDetail() {
       id: "paint",
       title: "Paint Correction",
       price: "₩450,000부터",
-      description: "긁힘, 흠집, 광택을 잃은 페인트를 제거하여 흠집 없이 최적의 광택과 깊이감을 선사하는 마감 처리를 해드립니다! 플라스틱이나 고무와 같은 민감한 부위는 연마제와의 마찰을 방지하기 위해 전문적으로 보호 처리됩니다.\n\n저희는 광택 작업을 가벼운 작업과 강도 높은 작업, 두 단계로 나눕니다. 어떤 작업이 고객님의 차량에 적합한지는 도장면의 상태와 원하시는 결과에 따라 결정됩니다.\n\n견적 문의는 부담 없이 연락 주시고, 페인트 상태를 직접 확인하고 싶으시면 언제든지 저희 매장을 방문해 주세요.",
+      description: "도장면의 스크래치, 스월마크, 워터스팟 등을 정밀하게 연마하여 신차 이상의 완벽한 도장 상태로 복원하는 광택 작업입니다.",
       image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=2000&auto=format&fit=crop",
       order: 2,
-      features: [],
+      features: [
+        "정밀 마스킹 및 전처리",
+        "수성 광택 (1~3 Step)",
+        "홀로그램 및 스월마크 완벽 제거",
+        "도장면 탈지 및 검수",
+        "프리미엄 실런트 코팅"
+      ],
       pricing: [
         { 
           title: "라이트 폴리싱 (Light Polish)", 
@@ -187,30 +193,6 @@ export default function ServiceDetail() {
 
   return (
     <div className="w-full flex flex-col bg-white">
-      {/* Hero Banner */}
-      <section className="relative min-h-[40vh] md:min-h-[60vh] lg:h-[70vh] w-full flex items-center justify-center overflow-hidden bg-black">
-        <div className="absolute inset-0 z-0">
-          <img
-            src={service.image}
-            alt={service.title}
-            className="w-full h-full object-cover opacity-50"
-            referrerPolicy="no-referrer"
-          />
-        </div>
-        <div className="relative z-10 text-center px-6 py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter uppercase text-white mb-6 leading-none">
-              {service.title}
-            </h1>
-            <div className="w-16 md:w-24 h-1 md:h-1.5 bg-white mx-auto" />
-          </motion.div>
-        </div>
-      </section>
-
       {/* Detailed Guide Section */}
       <section className="py-16 md:py-24 lg:py-32 px-4 sm:px-6 md:px-8">
         <div className="max-w-7xl mx-auto">
@@ -222,7 +204,7 @@ export default function ServiceDetail() {
               transition={{ duration: 0.8 }}
               className="space-y-6 md:space-y-8"
             >
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-2">
                 <h2 className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase text-black/30">Service Overview</h2>
                 <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black leading-tight">
                   {service.id === 'interior' ? (
@@ -234,7 +216,7 @@ export default function ServiceDetail() {
                   )}
                 </h3>
               </div>
-              <p className="text-lg md:text-xl text-black/60 leading-relaxed font-light break-keep whitespace-pre-line">
+              <p className="text-base md:text-lg text-black/60 leading-relaxed break-keep whitespace-pre-line">
                 {service.description}
               </p>
               
